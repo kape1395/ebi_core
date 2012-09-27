@@ -1,0 +1,5 @@
+Private programs used by erlang:
+  * bio_ers_solver_port
+        Erlang port for biosensor simulator. It is automatically copied
+        from ../../bio_ers_solver_port/bio_ers_solver_port in the build
+        process.

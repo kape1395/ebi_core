@@ -1,0 +1,10 @@
+#!/bin/bash
+# NOTE: WD will be in bio_ers and not in bio_ers/test.
+valgrind \
+    --log-file=bio_ers_solver_port-t01-valgrind-%p.log \
+    --leak-check=full \
+    --show-reachable=yes \
+    --verbose \
+    --gen-suppressions=all \
+    --suppressions=../bio_ers_solver_port/valgrind.supp \
+    ../bio_ers_solver_port/.libs/bio_ers_solver_port
