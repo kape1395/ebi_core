@@ -13,10 +13,10 @@
 % See the License for the specific language governing permissions and
 % limitations under the License.
 %
--module(bio_ers_model).
+-module(ebi_model).
 -export([parse_file/1, read_model/2]).
 -include_lib("xmerl/include/xmerl.hrl").
--include("bio_ers.hrl").
+-include("ebi.hrl").
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Public functions.

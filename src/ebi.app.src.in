@@ -18,6 +18,6 @@
     {vsn, "@PACKAGE_VERSION@"},
     {registered, [ebi]},
     {mod, {ebi_app, []}},
-    {applications, [kernel, stdlib, xmerl, crypto, ssh, mnesia]},
+    {applications, [kernel, stdlib, xmerl, mnesia]},
     {env, []}
 ]}.

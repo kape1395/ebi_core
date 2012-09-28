@@ -15,14 +15,14 @@
 %
 
 %%
-%%  @doc This module defined bio_ers_queue behaviour and therefore defines
+%%  @doc This module defined ebi_queue behaviour and therefore defines
 %%  an interface for all the queue implementations.
 %%
--module(bio_ers_queue).
+-module(ebi_queue).
 -behaviour(gen_server).
 -export([start_link/2, start_link/3, submit/2, cancel/2, delete/2, result/2, status/2]).
 -export([init/1, terminate/2, handle_call/3, handle_cast/2, handle_info/2, code_change/3]). % Callbacks
--include("bio_ers.hrl").
+-include("ebi.hrl").
 
 
 %%  module and module's state

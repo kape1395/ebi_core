@@ -13,7 +13,7 @@
 % See the License for the specific language governing permissions and
 % limitations under the License.
 %
--module(bio_ers_sup).
+-module(ebi_sup).
 -behaviour(supervisor).
 -export([start_link/1]).
 -export([init/1]).
@@ -23,7 +23,7 @@
 %%
 %%  Start supervisor.
 %%
-start_link(Config) -> % XXX: pass config further.
+start_link(_Config) -> % XXX: pass config further.
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 %%
@@ -31,5 +31,5 @@ start_link(Config) -> % XXX: pass config further.
 %%
 init(_Args) ->
     {ok, {{one_for_one, 1, 60}, [
-        {bio_ers, {bio_ers, start_link, []}, permanent, brutal_kill, worker, [bio_ers]}
+        {ebi, {ebi, start_link, []}, permanent, brutal_kill, worker, [ebi]}
     ]}}.

@@ -16,15 +16,15 @@
 
 
 %%
-%% @doc Main interface of the `bio_ers' application.
-%% @headerfile "bio_ers.hrl"
+%% @doc Main interface of the `ebi' application.
+%% @headerfile "ebi.hrl"
 %%
--module(bio_ers).
+-module(ebi).
 -behaviour(gen_server).
 -export([start_link/0, stop/0, get_id/1]).
 -export([test/0]).
 -export([init/1, terminate/2, handle_call/3, handle_cast/2, handle_info/2, code_change/3]).
--include("bio_ers.hrl").
+-include("ebi.hrl").
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -32,10 +32,10 @@
 %%
 
 start_link() ->
-    gen_server:start_link({local, bio_ers}, bio_ers, [], []).
+    gen_server:start_link({local, ebi}, ebi, [], []).
 
 stop() ->
-    gen_server:cast(bio_ers, stop).
+    gen_server:cast(ebi, stop).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -43,7 +43,7 @@ stop() ->
 %%
 
 test() ->
-    gen_server:call(bio_ers, test).
+    gen_server:call(ebi, test).
 
 
 %%

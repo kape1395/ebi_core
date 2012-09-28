@@ -1,0 +1,148 @@
+biosensor (0.7.0) oneiric; urgency=low
+
+  * Erlang server for simulating biosensors is implemented.
+  * Symbols are now also used in the solver definition. Implicit symbol
+    declarations are also supported (write value directly, instead of
+    defing useless parameters like '0').
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sun, 04 Mar 2012 16:41:49 +0200
+
+biosensor (0.6.6) natty; urgency=low
+
+  * Minor fixes for the build to work with xsdcxx/natty uptodate
+    3.3.0.1-1.
+  * Reactions will now be integrated over open regions at least in
+    injected electrodes.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Wed, 14 Sep 2011 01:46:51 +0300
+
+biosensor (0.6.5) lucid; urgency=low
+
+  * Some files were missing in the source distribution. This is fixed
+    now.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Thu, 09 Sep 2010 00:03:49 +0300
+
+biosensor (0.6.4) lucid; urgency=low
+
+  * Precision is now set to 12 digits for the current density output
+    generator.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Wed, 08 Sep 2010 23:09:42 +0300
+
+biosensor (0.6.3) lucid; urgency=low
+
+  * Changes stop condition, based on current gradient. It will fire
+    success only after 3 successfull tests.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sun, 05 Sep 2010 15:47:58 +0300
+
+biosensor (0.6.2) lucid; urgency=low
+
+  * Small bugfix for fallbackForStepCount. Now it works.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Fri, 03 Sep 2010 22:08:23 +0300
+
+biosensor (0.6.1) lucid; urgency=low
+
+  * Implemented In-memory solver state holder.
+  * Workaround for initial conditions on corners is implemented.
+    This fixes the problem, that arised at 0'th iteration in the
+    profiles.
+  * TBD: Permissible oscillation.
+  * Introduced attribute 'forStepCount' in fallback element.
+  * Precision now can be specified for the concentration profile
+    output writer.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Fri, 03 Sep 2010 12:06:04 +0300
+
+biosensor (0.6.0) lucid; urgency=low
+
+  * Implementation of adaptive time step adjuster.
+  * Implementation of concentration oscillation stop condition.
+  * Removed raising of exception, if setting invalid concentration on
+    constant bound.
+  * Implemented currentdensity subcommand in the bio-output. It removes
+    trash, produced by the fallbacks when doing adaptive time step
+    adjustments.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Thu, 02 Sep 2010 23:25:46 +0300
+
+biosensor (0.5.2) lucid; urgency=low
+
+  * Reimplemented calculation of reaction in the area subsolver. It is
+    now calculated in each half-step in the 2D solver. This makes schema
+    more stable (bigger steps in time can be used). Accuracy was tested
+    using test/test-2100-nano2d-hiR-dt?.xml, comparing 0.5.2 with 0.5.1.
+    Current censity was almost identical comparing 0.5.2 at dt=1E-4
+    with 0.4.3 at dt=1E-6 (fails at 88s).
+  * Eliminated duplication of the code, implementing the reaction.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Wed, 01 Sep 2010 15:11:13 +0300
+
+biosensor (0.5.1) lucid; urgency=low
+
+  * Updated changelog
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Mon, 16 Aug 2010 00:05:54 +0300
+
+biosensor (0.5.0) lucid; urgency=low
+
+  * Implemented one-dimensional implicit solver.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Mon, 16 Aug 2010 00:04:33 +0300
+
+biosensor (0.4.3) lucid; urgency=low
+
+  * Solver performance optimizations.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Fri, 06 Aug 2010 05:14:50 +0300
+
+biosensor (0.4.2) karmic; urgency=low
+
+  * Small fixes in the build part. It was needed because of porting this
+    application to Debian.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Mon, 04 Jan 2010 23:22:09 +0200
+
+biosensor (0.4.1) unstable; urgency=low
+
+  * Fixes for reactions on a bound. Previous impmenentation had nothing in common with the mathematical part.
+  * Fixed bugs regarding diffusion directions on the bounds.
+  * Improved logging.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Fri, 18 Dec 2009 18:41:03 +0200
+
+biosensor (0.4.0) unstable; urgency=low
+
+  * Source distrubution now also includes cxx/hxx generated from the XSD files.
+  * Added program bio-output, it can calculate steady state current density and
+    halftime from a current density file.
+  * Added support for the overriding symbol values in the model using command line parameters.
+  * Added support for different diffusion coefficients for different
+    axes.
+  * Simulation time is now written at the end of simulation.
+  * Implemented additional functionality in the bio-output: ability to
+    extract 1d data from 2d grid.
+  * Implemented support for reactions on the bounds.
+  * Improved support for RedOx reactions. It can now support more
+    schemes, not only a+b->c+d.
+  * Small fixes regarding error handling...
+  * Updated libbost M4 macros (failed to compile after linux upgrade)
+  * Duplicate ICursor2D implementations were moved to
+    bio::dm::AbstractCursor2D
+  * Implemented resuming of the simulation.
+  * Fixed bug in generation of xsi:schemaLocation for the model-
+    actual.xml
+  * Removed empty cxx files.
+  * Renamed all namespaces to use prefix http://karolis.5grupe.lt/
+    instead of http://lt.5grupe.karolis/. I think there was a big
+    mistype.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sun, 22 Nov 2009 01:17:13 +0200
+
+biosensor (0.3.8) unstable; urgency=low
+
+  * Some bugs are fixed. Main functionality is alredy working.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sun, 05 Apr 2009 10:33:23 +0300

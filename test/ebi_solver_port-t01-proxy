@@ -1,3 +1,3 @@
 #!/bin/bash
 #?? WD will be in bio_ers and not in bio_ers/test.
-../../bio_ers_solver_port/.libs/bio_ers_solver_port
+../../ebi_solver_port/.libs/ebi_solver_port

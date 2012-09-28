@@ -1,4 +1,4 @@
--module(bio_ers_queue_mgr_sup).
+-module(ebi_queue_mgr_sup).
 -behaviour(supervisor).
 -export([init/1]).
 

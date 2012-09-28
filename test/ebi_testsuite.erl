@@ -13,7 +13,7 @@
 % See the License for the specific language governing permissions and
 % limitations under the License.
 %
--module(bio_ers_testsuite).
+-module(ebi_testsuite).
 -export([run/1]).
 
 

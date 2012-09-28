@@ -21,10 +21,12 @@ all: erlang-compile erlang-test erlang-doc
 erlang-compile:
 	$(REBAR) compile
 
-erlang-test: priv/bio_ers_solver_port
+#erlang-test: priv/bio_ers_solver_port
+erlang-test:
 	$(REBAR) eunit
 
-erlang-itest: priv/bio_ers_solver_port
+#erlang-itest: priv/bio_ers_solver_port
+erlang-itest:
 	$(REBAR) ct
 
 erlang-doc:
@@ -35,9 +37,9 @@ erlang-clean:
 	$(REBAR) clean
 	rm -rfv ebin priv/bio_ers_solver_port *.log
 
-priv/bio_ers_solver_port: ../bio_ers_solver_port/.libs/bio_ers_solver_port
-	make -C ../bio_ers_solver_port
-	cp ../bio_ers_solver_port/.libs/bio_ers_solver_port priv/
+#priv/bio_ers_solver_port: ../bio_ers_solver_port/.libs/bio_ers_solver_port
+#	make -C ../bio_ers_solver_port
+#	cp ../bio_ers_solver_port/.libs/bio_ers_solver_port priv/
 
 
 ################################################################################

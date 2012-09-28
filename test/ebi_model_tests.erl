@@ -13,15 +13,22 @@
 % See the License for the specific language governing permissions and
 % limitations under the License.
 %
--module(bio_ers_tests).
+-module(ebi_model_tests).
 -include_lib("eunit/include/eunit.hrl").
+-include("ebi.hrl").
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Test descriptions
 %%
+-define(setup(F), {setup, fun start/0, fun stop/1, F}).
 
-basic_test_() ->
-    {setup, fun start/0, fun stop/1, fun test_returns_string/1}.
+main_test_() ->
+    [
+        ?setup(fun test_parsing_successful/1),
+        ?setup(fun test_read_model/1)
+    ].
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -29,19 +36,28 @@ basic_test_() ->
 %%
 
 start() ->
-    {ok, Pid} = bio_ers:start_link(),
-    Pid.
+    ok.
 
-stop(_Pid) ->
-    bio_ers:stop().
+stop(_) ->
+    ok.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Actual tests
 %%
 
-test_returns_string(_Pid) ->
-    [?_assertEqual("This is a test", bio_ers:test())].
+test_parsing_successful(_) ->
+    {Status, _Model} = ebi_model:parse_file("../test/ebi_model_tests-CNT-2D.xml"),
+    [?_assertEqual(ok, Status)].
+
+
+test_read_model(_) ->
+    #model{type = Type} = ebi_model:read_model(
+        "../test/ebi_model_tests-CNT-2D.xml",
+        undefined),
+    [?_assertEqual(kp1_xml, Type)].
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

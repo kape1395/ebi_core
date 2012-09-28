@@ -19,11 +19,11 @@
 %% and related entities.
 %% 
 
--module(bio_ers_store).
+-module(ebi_store).
 -behaviour(gen_server).
 -export([start/0, start_link/0, stop/0, save_simulation/1, get_simulation/1]).
 -export([init/1, terminate/2, handle_call/3, handle_cast/2, handle_info/2, code_change/3]).
--include("bio_ers.hrl").
+-include("ebi.hrl").
 
 
 

@@ -17,18 +17,18 @@
 %%
 %% @doc This module is responsible for managing solver processes (ports).
 %% The module implements FSM that is acting as a connected process for the solver port.
-%% @headerfile "bio_ers_solver.hrl"
+%% @headerfile "ebi_solver.hrl"
 %%
--module(bio_ers_solver).
+-module(ebi_solver).
 -behaviour(gen_fsm).
 -export([start_link/1, start_link/2, run/1, suspend/1, cancel/1, status/1]).
 -export([init/1, handle_event/3, handle_sync_event/4, handle_info/3, terminate/3, code_change/4]).
 -export([init/2, running/2, restarting/2, suspending/2, suspended/2]).
--include("bio_ers.hrl").
--include("bio_ers_solver.hrl").
+-include("ebi.hrl").
+-include("ebi_solver.hrl").
 
 
--define(DEFAULT_PORT_PROGRAM, "priv/bio_ers_solver_port").
+-define(DEFAULT_PORT_PROGRAM, "priv/ebi_solver_port").
 -define(RC_UNDEFINED,          10).
 -define(RC_SIMULATION_DONE,    11).
 -define(RC_SIMULATION_STOPPED, 12).
@@ -42,7 +42,7 @@
 
 %%
 %%  @todo module doc.
-%%  see doc/bio_ers_uml/bio_ers_solver.svg
+%%  see doc/ebi_uml/ebi_solver.svg
 %%
 %%  States:
 %%      init
