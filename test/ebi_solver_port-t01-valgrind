@@ -1,5 +1,5 @@
 #!/bin/bash
-# NOTE: WD will be in bio_ers and not in bio_ers/test.
+echo "INFO: Running $0 in $(pwd)" >&2
 valgrind \
     --log-file=ebi_solver_port-t01-valgrind-%p.log \
     --leak-check=full \
@@ -7,4 +7,4 @@ valgrind \
     --verbose \
     --gen-suppressions=all \
     --suppressions=../ebi_solver_port/valgrind.supp \
-    ../ebi_solver_port/.libs/ebi_solver_port
+    ../priv/ebi_solver_port

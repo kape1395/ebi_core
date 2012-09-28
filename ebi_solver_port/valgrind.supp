@@ -1,0 +1,22 @@
+{
+   erl_init_1
+   Memcheck:Leak
+   fun:malloc
+   fun:ei_malloc
+   fun:main
+}
+{
+   erl_init_2
+   Memcheck:Leak
+   fun:malloc
+   fun:erl_init_eterm_alloc
+   fun:main
+}
+{
+   erl_init_3
+   Memcheck:Leak
+   fun:malloc
+   fun:ei_m_create
+   fun:main
+}
+

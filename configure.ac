@@ -36,7 +36,6 @@ AC_ERLANG_CHECK_LIB([eunit])
 
 AC_CONFIG_FILES([
     Makefile
-    src/ebi.app.src
 ])
 
 AC_OUTPUT

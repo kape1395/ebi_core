@@ -4,8 +4,7 @@ ebin/
 .project
 .settings/
 logs/
-src/ebi.app.src
-
+ebi_solver_port/bio_ers_solver_port.log
 Makefile
 Makefile.in
 autom4te.cache

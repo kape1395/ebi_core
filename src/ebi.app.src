@@ -15,7 +15,7 @@
 %
 {application, ebi, [
     {description, "Erlang server for simulating biosensors"},
-    {vsn, "@PACKAGE_VERSION@"},
+    {vsn, {cmd, "sed -ne '1s/^.* (\\(.*\\)) .*$/\\1/p' ChangeLog"}},
     {registered, [ebi]},
     {mod, {ebi_app, []}},
     {applications, [kernel, stdlib, xmerl, mnesia]},

@@ -1,4 +1,1 @@
-ebi
-===
-
-Erlang biosensor simulation coordinator.
+README
