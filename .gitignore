@@ -5,6 +5,7 @@ ebin/
 .settings/
 logs/
 ebi_solver_port/bio_ers_solver_port.log
+ebi_solver_port/*.o
 Makefile
 Makefile.in
 autom4te.cache

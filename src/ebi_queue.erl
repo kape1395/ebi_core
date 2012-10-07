@@ -45,13 +45,13 @@
 -callback terminate(term(), term()) -> term().
 
 %%
-%%
+%%  Starts new simulation.
 %%
 -callback handle_submit(Simulation :: #simulation{}, State :: term()) ->
     {ok, NewState :: term()}.
 
 %%
-%%
+%%  Cancels the simulation.
 %%
 -callback handle_cancel(Simulation :: #simulation{}, State :: term()) ->
     {ok, NewState :: term()}.
