@@ -138,7 +138,7 @@
     version = 1,
     model,
     params = [],
-    state = undefined,
+    state = undefined :: (undefined | pending | running | completed | failed | canceled),
     checkpoints = [],
     outputs = []
     }).
