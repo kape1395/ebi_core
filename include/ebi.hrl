@@ -37,7 +37,7 @@
 %%  Contents of the `definition' depends on the type.
 %%
 -record(model, {
-    type,
+    type        :: (kp1_xml | kp1_parsed | reference),
     definition
     }).
 

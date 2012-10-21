@@ -3,6 +3,7 @@ ebin/
 .eunit/
 .project
 .settings/
+.ditz-config
 logs/
 ebi_solver_port/bio_ers_solver_port.log
 ebi_solver_port/*.o
