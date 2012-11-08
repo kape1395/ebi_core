@@ -13,7 +13,7 @@
 % See the License for the specific language governing permissions and
 % limitations under the License.
 %
-{application, ebi, [
+{application, ebi_core, [
     {description, "Erlang server for simulating biosensors"},
     {vsn, {cmd, "sed -ne '1s/^.* (\\(.*\\)) .*$/\\1/p' ChangeLog"}},
     {registered, [ebi]},
