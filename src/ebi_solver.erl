@@ -21,6 +21,7 @@
 %%
 -module(ebi_solver).
 -behaviour(gen_fsm).
+-compile([{parse_transform, lager_transform}]).
 -export([start_link/1, start_link/2, run/1, suspend/1, cancel/1, status/1]).
 -export([init/1, handle_event/3, handle_sync_event/4, handle_info/3, terminate/3, code_change/4]).
 -export([init/2, running/2, restarting/2, suspending/2, suspended/2]).
@@ -193,18 +194,15 @@ handle_info(Info, StateName, StateData) ->
 terminate(normal, _StateName, #fsm_state{state = canceled}) ->
     ok;
 terminate(normal, StateName, #fsm_state{state = failed}) ->
-    error_logger:warning_msg("Simulation failed at state=~p~n", [StateName]),
+    lager:warning("Simulation failed at state=~p", [StateName]),
     ok;
 terminate(normal, StateName, #fsm_state{state = done}) ->
-    error_logger:info_msg("Simulation done at state=~p~n", [StateName]),
+    lager:info("Simulation done at state=~p", [StateName]),
     ok;
 terminate(shutdown, _StateName, _StateData) ->
     ok;
 terminate(Reason, StateName, _StateData) ->
-    error_logger:error_msg(
-        "Unexpected termination Reason=~p StateName=~p~n",
-        [Reason, StateName]
-    ),
+    lager:error("Unexpected termination Reason=~p StateName=~p", [Reason, StateName]),
     ok.
 
 
