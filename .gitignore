@@ -5,10 +5,9 @@ ebin/
 .settings/
 .ditz-config
 logs/
+deps/
 ebi_solver_port/bio_ers_solver_port.log
 ebi_solver_port/*.o
-Makefile
-Makefile.in
 autom4te.cache
 config.hxx.in
 config.log
