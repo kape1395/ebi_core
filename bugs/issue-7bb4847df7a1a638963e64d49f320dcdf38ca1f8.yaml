@@ -1,0 +1,28 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Boot crashes.
+desc: |-
+  (ebi@127.0.0.1)1> 23:06:35.788 [error] CRASH REPORT Process <0.99.0> with 0 neighbours exited with reason: no match of right hand value undefined in ebi_mc2_app:start/2 line 63 in application_master:init/4 line 138
+  23:06:35.947 [info] Application ebi_mc2 exited with reason: no match of right hand value undefined in ebi_mc2_app:start/2 line 63
+  {"Kernel pid terminated",application_controller,"{application_start_failure,ebi_mc2,{bad_return,{{ebi_mc2_app,start,[normal,[]]},{'EXIT',{{badmatch,undefined},[{ebi_mc2_app,start,2,[{file,[115,114,99,47,101,98,105,95,109,99,50,95,97,112,112,46,101,114,108]},{line,63}]},{application_master,start_it_old,4,[{file,[97,112,112,108,105,99,97,116,105,111,110,95,109,97,115,116,101,114,46,101,114,108]},{line,274}]}]}}}}}"}
+  
+  Crash dump was written to: erl_crash.dump
+  Kernel pid terminated (application_controller) ({application_start_failure,ebi_mc2,{bad_return,{{ebi_mc2_app,start,[normal,[]]},{'EXIT',{{badmatch,undefined},[{ebi_mc2_app,start,2,[{file,[115,114,99
+type: :bugfix
+component: ebi
+release: 
+reporter: Karolis Petrauskas <k.petrauskas@gmail.com>
+status: :closed
+disposition: :fixed
+creation_time: 2012-11-08 21:07:38.392117 Z
+references: []
+
+id: 7bb4847df7a1a638963e64d49f320dcdf38ca1f8
+log_events: 
+- - 2012-11-08 21:07:39.381892 Z
+  - Karolis Petrauskas <k.petrauskas@gmail.com>
+  - created
+  - ""
+- - 2012-11-10 07:26:29.995725 Z
+  - Karolis Petrauskas <k.petrauskas@gmail.com>
+  - closed with disposition fixed
+  - ""
