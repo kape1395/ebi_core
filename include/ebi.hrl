@@ -16,6 +16,11 @@
 -ifndef(ebi_hrl).
 -define(ebi_hrl, ebi_hrl).
 
+-type sha1sum() :: list().
+
+-type model_id() :: sha1sum().
+-type model_type() :: (kp1_xml | kp1_parsed | reference | ebi_sbml_v1).
+
 
 %%
 %%  @type biosensor() = #biosensor{id = atom(), description = string()}.
@@ -37,7 +42,7 @@
 %%  Contents of the `definition' depends on the type.
 %%
 -record(model, {
-    type        :: (kp1_xml | kp1_parsed | reference),
+    type        :: model_type(),
     definition
     }).
 

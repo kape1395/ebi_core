@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Implement generic queue consumer.
+desc: ""
+type: :task
+component: ebi
+release: 
+reporter: Karolis Petrauskas <k.petrauskas@gmail.com>
+status: :unstarted
+disposition: 
+creation_time: 2013-01-08 22:06:16.952764 Z
+references: []
+
+id: bd4c6bbdddaf1a4eff9d696f367a8a6f0be348eb
+log_events: 
+- - 2013-01-08 22:06:17.560752 Z
+  - Karolis Petrauskas <k.petrauskas@gmail.com>
+  - created
+  - ""

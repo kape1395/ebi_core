@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Implement store, that would act as a queue.
+desc: ""
+type: :task
+component: ebi
+release: 
+reporter: Karolis Petrauskas <k.petrauskas@gmail.com>
+status: :unstarted
+disposition: 
+creation_time: 2013-01-08 22:04:37.318247 Z
+references: []
+
+id: 39bf1866789b0fc47c91829af885c10fa49ce7b5
+log_events: 
+- - 2013-01-08 22:04:38.118160 Z
+  - Karolis Petrauskas <k.petrauskas@gmail.com>
+  - created
+  - ""

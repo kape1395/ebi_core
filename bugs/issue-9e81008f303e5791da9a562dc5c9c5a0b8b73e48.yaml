@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Use tags for grouping models instead of "biosensor" entity.
+desc: ""
+type: :task
+component: ebi
+release: 
+reporter: Karolis Petrauskas <k.petrauskas@gmail.com>
+status: :unstarted
+disposition: 
+creation_time: 2013-01-08 22:07:06.249984 Z
+references: []
+
+id: 9e81008f303e5791da9a562dc5c9c5a0b8b73e48
+log_events: 
+- - 2013-01-08 22:07:07.537966 Z
+  - Karolis Petrauskas <k.petrauskas@gmail.com>
+  - created
+  - ""
