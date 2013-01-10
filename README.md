@@ -18,6 +18,10 @@ Model
 Model Definition
 :   ...
 
+Model Source
+:   Imported document (biosensor.xml, SBML, etc). It has a link to
+    the corresponding model definition (the native form).
+
 Derived Model
 :   ... aka one-dimensional, dimensionless, etc..
 
