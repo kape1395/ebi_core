@@ -55,21 +55,15 @@ get_id(Simulation) when is_record(Simulation, simulation) ->
     Key = {Version, Model, lists:sort(Params)},
     get_id(erlang:term_to_binary(Key));
 
-get_id(Model = #model{type = reference, definition = RefKey}) when is_record(Model, model) ->
-    RefKey;
-
-get_id(Model) when is_record(Model, model) ->
-    #model{type = Type, definition = Definition} = Model,
-    Key = {Type, Definition},
-    get_id(erlang:term_to_binary(Key));
+get_id(ModelDef) when is_record(ModelDef, model_def) ->
+    ebi_model:get_ref(ModelDef);
 
 get_id(unique) ->
-    get_id(erlang:term_to_binary(erlang:make_ref()));
+    ebi_utils:sha1sum(erlang:term_to_binary(erlang:make_ref()));
 
 get_id(Binary) when is_binary(Binary) ->
-    SHA = crypto:sha(Binary),
-    lists:flatten([io_lib:format("~2.16.0B", [X]) || X <- binary_to_list(SHA)]).
-    
+    ebi_utils:sha1sum(Binary).
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

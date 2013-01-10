@@ -15,6 +15,9 @@ Biosensor
 Model
 :   ...
 
+Model Definition
+:   ...
+
 Derived Model
 :   ... aka one-dimensional, dimensionless, etc..
 

@@ -34,10 +34,30 @@
 -define(STORE_MODEL_TYPE, ebi_sbml_v1).
 
 
+%%
+%%  Model definition. Definitions are references from models and simulations
+%%  and they cannot be changed ever. The definitions are non-variable to
+%%  ensure traceability in the simulations.
+%%
+-record(ebi_store_model_def, {
+    ref         :: model_ref(),
+    type        :: model_type(),
+    content     :: term(),
+    params      :: [Name :: string()]
+}).
+
+%%
+%%  Model, as it is visible to a user. The model is identified via its ID.
+%%  Contents of the model can change over time. Multiple records with the same ID can exist.
+%%
 -record(ebi_store_model, {
     id          :: model_id(),
-    type        :: model_type(),
-    definition  :: term()
+    name        :: string(),
+    description :: string(),
+    status      :: model_status(),
+    changed     :: calendar:timestamp(),
+    definition  :: model_ref(),                             %% Model Definition
+    mapping     :: [{From :: string(), To :: string()}]     %% Parameter mapping (model -> model def).
 }).
 
 
@@ -68,7 +88,8 @@ install(Nodes) ->
 -spec wait_for_tables(number()) -> ok | term().
 wait_for_tables(Timeout) ->
     mnesia:wait_for_tables([
-            ebi_store_model
+            ebi_store_model,
+            ebi_store_model_def
         ], Timeout).
 
 %%
@@ -77,7 +98,8 @@ wait_for_tables(Timeout) ->
 create_tables(Nodes) ->
     DefOptDC = {disc_copies, Nodes},
     OK = {atomic, ok},
-    OK = mnesia:create_table(ebi_store_model,  [{type, set},  ?ATTRS(ebi_store_model),  DefOptDC]),
+    OK = mnesia:create_table(ebi_store_model,       [{type, bag},  ?ATTRS(ebi_store_model),     DefOptDC]),
+    OK = mnesia:create_table(ebi_store_model_def,   [{type, set},  ?ATTRS(ebi_store_model_def), DefOptDC]),
     ok.
 
 
@@ -95,11 +117,20 @@ start_link() ->
 %%  This function ignores duplicate inserts (duplicates not inserted).
 %%
 -spec add_model(#model{}) -> ok.
-add_model(Model = #model{type = ?STORE_MODEL_TYPE = Type, definition = Definition}) ->
+add_model(Model) ->
+    % TODO: Extract ModelDef here.
+    % TODO #model{type = ?STORE_MODEL_TYPE, id = ModelId} = Model,
     ModelId = ebi:get_id(Model),
     Activity = fun () ->
         case mnesia:read(ebi_store_model, ModelId) of
-            [] -> mnesia:write(#ebi_store_model{id = ModelId, type = Type, definition = Definition});
+            [] ->
+                mnesia:write(#ebi_store_model{
+                    id = ModelId,
+                    status = valid,
+                    changed = erlang:now()
+                   %type = Type,
+                   %definition = Definition
+                });
             [_] -> ok
         end
     end,
@@ -111,12 +142,13 @@ add_model(Model = #model{type = ?STORE_MODEL_TYPE = Type, definition = Definitio
 %%
 -spec get_model(model_id()) -> {ok, #model{}}.
 get_model(ModelId) ->
+    % TODO: Join with Model Def.
     Activity = fun () ->
         mnesia:read(ebi_store_model, ModelId)
     end,
     [Record] = mnesia:activity(transaction, Activity),
-    #ebi_store_model{type = Type, definition = Definition} = Record,
-    {ok, #model{type = Type, definition = Definition}}.
+    #ebi_store_model{} = Record,
+    {ok, #model{}}.
 
 
 %%
@@ -127,8 +159,8 @@ get_models(_Query = all) ->
     Activity = fun () ->
         mnesia:match_object(#ebi_store_model{_='_'})
     end,
-    Mapping = fun (#ebi_store_model{type = T, definition = D}) ->
-        #model{type = T, definition = D}
+    Mapping = fun (#ebi_store_model{}) ->
+        #model{}    % TODO: Load all needed attributes.
     end,
     Records = mnesia:activity(transaction, Activity),
     {ok, lists:map(Mapping, Records)}.

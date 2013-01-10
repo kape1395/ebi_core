@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Implement model normalization.
+desc: ""
+type: :task
+component: ebi
+release: 
+reporter: Karolis Petrauskas <k.petrauskas@gmail.com>
+status: :unstarted
+disposition: 
+creation_time: 2013-01-09 22:59:33.055923 Z
+references: []
+
+id: 37dc2f2f158e05f75ef885d4a1ab873c6803cfe3
+log_events: 
+- - 2013-01-09 22:59:34.368332 Z
+  - Karolis Petrauskas <k.petrauskas@gmail.com>
+  - created
+  - ""

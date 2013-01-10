@@ -16,36 +16,55 @@
 -ifndef(ebi_hrl).
 -define(ebi_hrl, ebi_hrl).
 
--type sha1sum() :: list().
 
--type model_id() :: sha1sum().
+%% =============================================================================
+%%  Generic types.
+%% =============================================================================
+
+-type sha1sum() :: list().
+-type timestamp() :: calendar:timestamp().
+
+
+
+%% =============================================================================
+%%  Model types.
+%% =============================================================================
+
+-type model_id() :: reference().     %% Identifies a model that can change over time.
+-type model_ref() :: sha1sum().      %% Identified a particular model state.
+-type model_status() :: (valid | deleted | changed).
 -type model_type() :: (kp1_xml | kp1_parsed | reference | ebi_sbml_v1).
 
+%%
+%%  Model definition. Definitions are references from models and simulations
+%%  and they cannot be changed ever. The definitions are non-variable to
+%%  ensure traceability in the simulations.
+%%
+-record(model_def, {
+    ref         :: model_ref(),
+    type        :: model_type(),
+    content     :: term(),
+    params      :: [Name :: string()]
+}).
 
 %%
-%%  @type biosensor() = #biosensor{id = atom(), description = string()}.
-%%  Describes one biosensor, for which several models can be defined.
-%%  I am not sure, wether will it be needed. It could be used for
-%%  grouping simulations, but labels and series are also suitable for this. 
-%%
--record(biosensor, {id, description}).
-
-
-%%
-%%  @type model() = #model{
-%%      type = atom(),
-%%      definition = any()
-%%      }.
-%%  Describes biosensor model definition. Types can be
-%%      `kp1_xml' for raw XML as a binary and
-%%      `kp1_parsed' for the model transformed to tuples.
-%%  Contents of the `definition' depends on the type.
+%%  Model, as it is visible to a user. The model is identified via its ID.
+%%  Contents of the model can change over time. Multiple records with the same ID can exist.
 %%
 -record(model, {
-    type        :: model_type(),
-    definition
-    }).
+    id          :: model_id(),
+    name        :: string(),
+    description :: string(),
+    status      :: model_status(),
+    changed     :: timestamp(),
+    definition  :: #model_def{},
+    mapping     :: [{{ModelParam :: string(), DefParam :: string()}}]
+}).
 
+
+%% =============================================================================
+%%  Other.
+%% =============================================================================
 
 %%
 %%  @type param() = #param{

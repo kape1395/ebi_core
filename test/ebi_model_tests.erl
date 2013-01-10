@@ -16,6 +16,7 @@
 -module(ebi_model_tests).
 -include_lib("eunit/include/eunit.hrl").
 -include("ebi.hrl").
+-include("ebi_model_native.hrl").
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -63,5 +64,31 @@ test_read_model(_) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Helper functions
 %%
+
+
+test_1() ->
+    #ebi_model{
+        species = [
+            #ebi_species{name = "S", description = ""},
+            #ebi_species{name = "P", description = ""},
+            #ebi_species{name = "Eo", description = ""},
+            #ebi_species{name = "Er", description = ""}
+        ],
+        reactions = [
+            #ebi_reaction{name = "R1", definition = #ebi_rdef_mm{
+                substrate = "S",
+                product = "P",
+                vmax = "Vmax",
+                km = "KM"
+            }},
+            #ebi_reaction{name = "R2", definition = #ebi_rdef_simple{
+                reagents = [{"Er", 1}, {"S", 1}],
+                products = [{"Eo", 1}, {"P", 1}],
+                rateconst = "k1"
+            }}
+        ],
+        compartments = []
+    }.
+
 
 
