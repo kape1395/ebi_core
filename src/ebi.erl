@@ -55,8 +55,8 @@ get_id(Simulation) when is_record(Simulation, simulation) ->
     Key = {Version, Model, lists:sort(Params)},
     get_id(erlang:term_to_binary(Key));
 
-get_id(ModelDef) when is_record(ModelDef, model_def) ->
-    ebi_model:get_ref(ModelDef);
+get_id(Model) when is_record(Model, model) ->
+    ebi_model:get_ref(Model);
 
 get_id(unique) ->
     ebi_utils:sha1sum(erlang:term_to_binary(erlang:make_ref()));

@@ -18,6 +18,9 @@ Model
 Model Definition
 :   ...
 
+Model Representation
+:   ...
+
 Model Source
 :   Imported document (biosensor.xml, SBML, etc). It has a link to
     the corresponding model definition (the native form).

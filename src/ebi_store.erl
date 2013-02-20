@@ -24,7 +24,7 @@
 -export([start_link/0]).
 -export([install/1, wait_for_tables/1]).
 -export([
-    add_model/1, get_model/1, get_models/1,
+    add_model/1, get_model/1, get_model/2, get_models/1,
     add_simulation/1, set_simulation_status/2, set_simulation_target/2, get_simulation/1, get_simulations/1
 ]).
 -export([init/1, terminate/2, handle_call/3, handle_cast/2, handle_info/2, code_change/3]).
@@ -35,29 +35,73 @@
 
 
 %%
-%%  Model definition. Definitions are references from models and simulations
-%%  and they cannot be changed ever. The definitions are non-variable to
-%%  ensure traceability in the simulations.
 %%
--record(ebi_store_model_def, {
-    ref         :: model_ref(),
-    type        :: model_type(),
-    content     :: term(),
-    params      :: [Name :: string()]
+%%
+-record(ebi_store_biosensor, {
+    id          :: string(),
+    name        :: string(),
+    description :: string()
 }).
+
 
 %%
 %%  Model, as it is visible to a user. The model is identified via its ID.
-%%  Contents of the model can change over time. Multiple records with the same ID can exist.
+%%  Contents of the model can change over time. Each version of the model is
+%%  defined by the `#ebi_store_model_def{}`.
 %%
 -record(ebi_store_model, {
     id          :: model_id(),
     name        :: string(),
     description :: string(),
-    status      :: model_status(),
-    changed     :: calendar:timestamp(),
-    definition  :: model_ref(),                             %% Model Definition
-    mapping     :: [{From :: string(), To :: string()}]     %% Parameter mapping (model -> model def).
+    status      :: model_status()
+}).
+
+
+%%
+%%  Model definition. Definitions are referenced from models and simulations
+%%  and they cannot be changed ever time. The definitions are non-variable to
+%%  ensure traceability in the simulations and are defined in the intarnal EBI format.
+%%
+-record(ebi_store_model_def, {
+    ref         :: model_ref(),
+    model_id    :: model_id(),
+    content     :: term(),
+    params      :: [model_param()],
+    created     :: timestamp(),
+    created_by  :: string(),
+    order_index :: integer()        % For tracking chronological order.
+}).
+
+
+%%
+%%  External representation of a model definition.
+%%  The representations are created on demand using available converters.
+%%
+-record(ebi_store_model_rep, {
+    model_ref   :: model_ref(),
+    model_id    :: model_id(),
+    model_type  :: model_type(),
+    content     :: term()
+}).
+
+
+%%
+%%
+%%
+-record(ebi_store_tag, {
+    name        :: string(),
+    description :: string(),
+    biosensors  :: [string()],
+    models      :: [model_id()]
+}).
+
+
+%%
+%%  Counter table.
+%%
+-record(ebi_store_counter, {
+    key         ::  atom(),
+    value       ::  integer()
 }).
 
 
@@ -88,8 +132,12 @@ install(Nodes) ->
 -spec wait_for_tables(number()) -> ok | term().
 wait_for_tables(Timeout) ->
     mnesia:wait_for_tables([
+            ebi_store_biosensor,
             ebi_store_model,
-            ebi_store_model_def
+            ebi_store_model_def,
+            ebi_store_model_rep,
+            ebi_store_tag,
+            ebi_store_counter
         ], Timeout).
 
 %%
@@ -98,8 +146,12 @@ wait_for_tables(Timeout) ->
 create_tables(Nodes) ->
     DefOptDC = {disc_copies, Nodes},
     OK = {atomic, ok},
-    OK = mnesia:create_table(ebi_store_model,       [{type, bag},  ?ATTRS(ebi_store_model),     DefOptDC]),
+    OK = mnesia:create_table(ebi_store_biosensor,   [{type, set},  ?ATTRS(ebi_store_biosensor), DefOptDC]),
+    OK = mnesia:create_table(ebi_store_model,       [{type, set},  ?ATTRS(ebi_store_model),     DefOptDC]),
     OK = mnesia:create_table(ebi_store_model_def,   [{type, set},  ?ATTRS(ebi_store_model_def), DefOptDC]),
+    OK = mnesia:create_table(ebi_store_model_rep,   [{type, set},  ?ATTRS(ebi_store_model_rep), DefOptDC]),
+    OK = mnesia:create_table(ebi_store_tag,         [{type, set},  ?ATTRS(ebi_store_tag),       DefOptDC]),
+    OK = mnesia:create_table(ebi_store_counter,     [{type, set},  ?ATTRS(ebi_store_counter),   DefOptDC]),
     ok.
 
 
@@ -118,37 +170,109 @@ start_link() ->
 %%
 -spec add_model(#model{}) -> ok.
 add_model(Model) ->
-    % TODO: Extract ModelDef here.
-    % TODO #model{type = ?STORE_MODEL_TYPE, id = ModelId} = Model,
-    ModelId = ebi:get_id(Model),
+    #model{
+        id          = OldModelId,
+        ref         = _OldModelRef,
+        name        = Name,
+        description = Description,
+        status      = Status,
+        changed     = Changed,
+        changed_by  = ChangedBy,
+        definition  = ModelDef,
+        parameters  = ModelParams,
+        representations = Representations
+    } = Model,
     Activity = fun () ->
-        case mnesia:read(ebi_store_model, ModelId) of
-            [] ->
-                mnesia:write(#ebi_store_model{
-                    id = ModelId,
-                    status = valid,
-                    changed = erlang:now()
-                   %type = Type,
-                   %definition = Definition
-                });
-            [_] -> ok
-        end
+        ModelId = case mnesia:read(ebi_store_model, OldModelId) of
+            []  -> mnesia:dirty_update_counter(ebi_store_counter, model, 1);
+            [_] -> OldModelId
+        end,
+        ok = mnesia:write(#ebi_store_model{
+            id = ModelId,
+            name = Name,
+            description = Description,
+            status = Status
+        }),
+        ModelRef = ebi_model:get_ref(Model),
+        ModelDefOI = mnesia:dirty_update_counter(ebi_store_counter, model_def, 1),
+        ok = mnesia:write(#ebi_store_model_def{
+            ref = ModelRef,
+            model_id = ModelId,
+            created = Changed,
+            created_by = ChangedBy,
+            content = ModelDef,
+            params = ModelParams,
+            order_index = ModelDefOI
+        }),
+        WriteRepFun = fun ({RT, RC}) ->
+            ok = mnesia:write(#ebi_store_model_rep{
+                model_ref = ModelRef,
+                model_id = ModelId,
+                model_type = RT,
+                content = RC
+            })
+        end,
+        lists:foreach(WriteRepFun, Representations),
+        {ok, ModelId, ModelRef}
     end,
-    ok = mnesia:activity(transaction, Activity).
+    mnesia:activity(transaction, Activity).
+
 
 
 %%
-%%
+%%  Returns last version of a model.
 %%
 -spec get_model(model_id()) -> {ok, #model{}}.
 get_model(ModelId) ->
-    % TODO: Join with Model Def.
+    get_model(ModelId, latest).
+
+%%
+%%  Returns a model of the specified version.
+%%
+-spec get_model(model_id(), model_ref()) -> {ok, #model{}}.
+get_model(ModelId, QueryModelRef) ->
     Activity = fun () ->
-        mnesia:read(ebi_store_model, ModelId)
+        [#ebi_store_model{
+            id = ModelId,
+            name = ModelName,
+            description = Description,
+            status = ModelStatus
+        }] = mnesia:read(ebi_store_model, ModelId),
+        ModelDefs = case QueryModelRef of
+            latest  -> mnesia:match_object(#ebi_store_model_def{model_id = ModelId, _ = '_'});
+            _       -> mnesia:read(ebi_store_model_def, QueryModelRef)
+        end,
+        case ModelDefs of
+            [] ->
+                ModelRef = undefined,
+                Changed = undefined,
+                ChangedBy = undefined,
+                Definition = undefined,
+                Parameters = undefined;
+            _ ->
+                {_, ModelDef} = lists:max([ {OI, D} || D = #ebi_store_model_def{order_index = OI} <- ModelDefs]),
+                #ebi_store_model_def{
+                    ref = ModelRef,
+                    created = Changed,
+                    created_by = ChangedBy,
+                    content = Definition,
+                    params = Parameters
+                } = ModelDef
+        end,
+        {ok, #model{
+            id = ModelId,
+            ref = ModelRef,
+            name = ModelName,
+            description = Description,
+            status = ModelStatus,
+            changed = Changed,
+            changed_by = ChangedBy,
+            definition = Definition,
+            parameters = Parameters,
+            representations = []
+        }}
     end,
-    [Record] = mnesia:activity(transaction, Activity),
-    #ebi_store_model{} = Record,
-    {ok, #model{}}.
+    mnesia:activity(transaction, Activity).
 
 
 %%

@@ -14,7 +14,7 @@
 % limitations under the License.
 %
 -module(ebi_model).
--export([parse_file/1, read_model/2, get_ref/1, normalize/1]).
+-export([parse_file/1, read_model/2, get_ref/1]).
 -include_lib("xmerl/include/xmerl.hrl").
 -include("ebi.hrl").
 -include("ebi_model_native.hrl").
@@ -51,55 +51,49 @@ read_model(FileName, _Type) ->
 %%
 %%  Get or calculate model definition reference.
 %%
-get_ref(#model_def{type = reference, content = RefKey}) ->
-    RefKey;
-
-get_ref(#model_def{type = Type, content = Content}) ->
-    get_ref({Type, Content});
-
-get_ref({Type, Content}) ->
-    ebi_utils:sha1sum(erlang:term_to_binary({Type, Content})).
+get_ref(#model{definition = Definition}) ->
+    ebi_utils:sha1sum(erlang:term_to_binary(Definition)).
 
 
 %%
 %%  Normalize model definition and update model parameter mapping accordingly.
 %%  This function also calculates and assigns model definition reference.
 %%
-normalize(Model) when is_record(Model, model) ->
-    #model{definition = Definition, mapping = Mapping} = Model,
-    #model_def{content = Content, type = Type} = Definition,
-    {ok, NormalizedContent, ContentNormalizationMap} = normalize_content(Content, Type),
-    NormalizedDef = Definition#model_def{
-        ref = get_ref({Type, NormalizedContent}),
-        content = NormalizedContent,
-        params = [ X || {_, X} <- ContentNormalizationMap ]
-    },
-    NormalizedMap = case Mapping of
-        undefined ->
-            ContentNormalizationMap;
-        _ ->
-            ParamMapFun = fun ({OrigParam, NormParam}) ->
-                case lists:keyfind(OrigParam, 2, Mapping) of
-                    false                   -> {OrigParam, NormParam};
-                    {ModelParam, OrigParam} -> {ModelParam, NormParam}
-                end
-            end,
-            lists:map(ParamMapFun, ContentNormalizationMap)
-    end,
-    NormalizedModel = Model#model{
-        definition = NormalizedDef,
-        mapping = NormalizedMap
-    },
-    {ok, NormalizedModel}.
+%% normalize(Model) when is_record(Model, model) ->
+%%     #model{definition = Definition, mapping = Mapping} = Model,
+%%     #model_def{content = Content, type = Type} = Definition,
+%%     {ok, NormalizedContent, ContentNormalizationMap} = normalize_content(Content, Type),
+%%     NormalizedDef = Definition#model_def{
+%%         ref = get_ref({Type, NormalizedContent}),
+%%         content = NormalizedContent,
+%%         params = [ X || {_, X} <- ContentNormalizationMap ]
+%%     },
+%%     NormalizedMap = case Mapping of
+%%         undefined ->
+%%             ContentNormalizationMap;
+%%         _ ->
+%%             ParamMapFun = fun ({OrigParam, NormParam}) ->
+%%                 case lists:keyfind(OrigParam, 2, Mapping) of
+%%                     false                   -> {OrigParam, NormParam};
+%%                     {ModelParam, OrigParam} -> {ModelParam, NormParam}
+%%                 end
+%%             end,
+%%             lists:map(ParamMapFun, ContentNormalizationMap)
+%%     end,
+%%     NormalizedModel = Model#model{
+%%         definition = NormalizedDef,
+%%         mapping = NormalizedMap
+%%     },
+%%     {ok, NormalizedModel}.
 
 
 %%
 %%
 %%
-normalize_content(Content, _Type) ->
-    NormalizedContent = Content,    % TODO: Implement normalization.
-    ParamMapping = [],
-    {ok, NormalizedContent, ParamMapping}.
+%% normalize_content(Content, _Type) ->
+%%     NormalizedContent = Content,    % TODO: Implement normalization.
+%%     ParamMapping = [],
+%%     {ok, NormalizedContent, ParamMapping}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

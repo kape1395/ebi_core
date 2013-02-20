@@ -18,6 +18,6 @@
     {vsn, {cmd, "sed -ne '1s/^.* (\\(.*\\)) .*$/\\1/p' ChangeLog"}},
     {registered, [ebi]},
     {mod, {ebi_app, []}},
-    {applications, [kernel, stdlib, xmerl, mnesia]},
+    {applications, [kernel, stdlib, sasl, gproc, xmerl, lager, mnesia]},
     {env, []}
 ]}.

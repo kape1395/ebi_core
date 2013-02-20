@@ -15,6 +15,7 @@
 %
 -ifndef(ebi_hrl).
 -define(ebi_hrl, ebi_hrl).
+-include("ebi_model_sbml.hrl").
 
 
 %% =============================================================================
@@ -30,35 +31,28 @@
 %%  Model types.
 %% =============================================================================
 
--type model_id() :: reference().     %% Identifies a model that can change over time.
--type model_ref() :: sha1sum().      %% Identified a particular model state.
+-type model_id() :: term().         %% Identifies a model that can change over time.
+-type model_ref() :: sha1sum().     %% Identified a particular model state.
 -type model_status() :: (valid | deleted | changed).
+-type model_version() :: v1.
 -type model_type() :: (kp1_xml | kp1_parsed | reference | ebi_sbml_v1).
-
-%%
-%%  Model definition. Definitions are references from models and simulations
-%%  and they cannot be changed ever. The definitions are non-variable to
-%%  ensure traceability in the simulations.
-%%
--record(model_def, {
-    ref         :: model_ref(),
-    type        :: model_type(),
-    content     :: term(),
-    params      :: [Name :: string()]
-}).
+-type model_param() :: string().
 
 %%
 %%  Model, as it is visible to a user. The model is identified via its ID.
-%%  Contents of the model can change over time. Multiple records with the same ID can exist.
+%%  Contents of the model can change over time.
 %%
 -record(model, {
     id          :: model_id(),
+    ref         :: model_ref(),
     name        :: string(),
     description :: string(),
     status      :: model_status(),
     changed     :: timestamp(),
-    definition  :: #model_def{},
-    mapping     :: [{{ModelParam :: string(), DefParam :: string()}}]
+    changed_by  :: string(),
+    definition  :: #sbml_model{},
+    parameters = []         :: [model_param()],
+    representations = []    :: [{model_type(), Representation :: term()}]
 }).
 
 
