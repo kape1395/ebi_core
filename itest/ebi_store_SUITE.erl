@@ -85,13 +85,18 @@ test_add_model(_Config) ->
     {ok, ModelId, ModelRef3} = ebi_store:add_model(Model03),
     ModelRef /= ModelRef3,
 
+    %% Check get latest model
     Model03GetLatest = Model03#model{ref = ModelRef3, representations = []},
     ct:pal("Model03GetLatest=~p~n", [Model03GetLatest]),
     {ok, Model03GetLatest} = ebi_store:get_model(ModelId),
 
+    %% Check get specific version
     Model02Get = Model02#model{description = "Other", representations = []},
     ct:pal("Model02Get=~p~n", [Model02Get]),
     {ok, Model02Get} = ebi_store:get_model(ModelId, ModelRef),
+
+    %% Check get list
+    {ok, [Model03GetLatest]} = ebi_store:get_models(all),
     ok.
 
 
