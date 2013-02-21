@@ -15,7 +15,7 @@
 %
 -ifndef(ebi_hrl).
 -define(ebi_hrl, ebi_hrl).
--include("ebi_model_sbml.hrl").
+-include("ebi_model.hrl").
 
 
 %% =============================================================================
@@ -50,7 +50,7 @@
     status      :: model_status(),
     changed     :: timestamp(),
     changed_by  :: string(),
-    definition  :: #sbml_model{},
+    definition  :: #ebi_model{},
     parameters = []         :: [model_param()],
     representations = []    :: [{model_type(), Representation :: term()}]
 }).

@@ -13,8 +13,8 @@
 % See the License for the specific language governing permissions and
 % limitations under the License.
 %
--ifndef(ebi_model_native_hrl).
--define(ebi_model_native_hrl, ok).
+-ifndef(ebi_model_hrl).
+-define(ebi_model_hrl, ok).
 
 
 %%

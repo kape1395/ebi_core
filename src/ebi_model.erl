@@ -17,7 +17,7 @@
 -export([parse_file/1, read_model/2, get_ref/1]).
 -include_lib("xmerl/include/xmerl.hrl").
 -include("ebi.hrl").
--include("ebi_model_native.hrl").
+-include("ebi_model.hrl").
 
 %% =============================================================================
 %%  Public API.

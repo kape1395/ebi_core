@@ -16,7 +16,7 @@
 -module(ebi_model_tests).
 -include_lib("eunit/include/eunit.hrl").
 -include("ebi.hrl").
--include("ebi_model_native.hrl").
+-include("ebi_model.hrl").
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -54,7 +54,7 @@ test_parsing_successful(_) ->
 
 
 test_read_model(_) ->
-    #model{type = Type} = ebi_model:read_model(
+    #model{representations = [Type, _Content]} = ebi_model:read_model(
         "../test/ebi_model_tests-CNT-2D.xml",
         undefined),
     [?_assertEqual(kp1_xml, Type)].
