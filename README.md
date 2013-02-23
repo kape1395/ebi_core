@@ -85,7 +85,8 @@ To run the application interactively:
 and then in the Erlang shell:
 
     ebi_test_utils:configure("./temp").
-    ebi_test_utils:install_db().        % For the first startup only.
+    % ebi_test_utils:install_db().        % For the first startup only.
     ebi_test_utils:start_core().
-    init:stop().
+    % ...
+    % init:stop().
 
