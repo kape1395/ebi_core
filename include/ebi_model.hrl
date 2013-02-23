@@ -28,34 +28,34 @@
 %%  Generic types.
 %% =============================================================================
 
--type parameter()   :: string().
--type species()     :: string().
+-type parameter()       :: string().
+-type species()         :: string().
 
 -record(ebi_species, {
-    name        :: species(),
-    description :: string()
+    name                :: species(),
+    description         :: string()
 }).
 
 -record(ebi_rdef_simple, {
-    reagents    :: [{species(), number()}],
-    products    :: [{species(), number()}],
-    rateconst   :: parameter()
+    reagents = []       :: [{species(), number()}],
+    products = []       :: [{species(), number()}],
+    rateconst           :: parameter()
 }).
 -record(ebi_rdef_mm, {
-    substrate   :: species(),
-    product     :: species(),
-    vmax        :: parameter(),
-    km          :: parameter()
+    substrate           :: species(),
+    product             :: species(),
+    vmax                :: parameter(),
+    km                  :: parameter()
 }).
 -record(ebi_reaction, {
-    name        :: string(),
-    definition  :: #ebi_rdef_simple{} | #ebi_rdef_mm{}
+    name                :: string(),
+    definition          :: #ebi_rdef_simple{} | #ebi_rdef_mm{}
 }).
 
 -record(ebi_model, {
-    species         :: [#ebi_species{}],
-    reactions       :: [#ebi_reaction{}],
-    compartments    :: []
+    species = []        :: [#ebi_species{}],
+    reactions = []      :: [#ebi_reaction{}],
+    compartments = []   :: []
 }).
 
 
