@@ -53,7 +53,8 @@
     id          :: model_id(),
     name        :: string(),
     description :: string(),
-    status      :: model_status()
+    status      :: model_status(),
+    definitions = [] :: [model_ref()]
 }).
 
 
@@ -64,12 +65,10 @@
 %%
 -record(ebi_store_model_def, {
     ref         :: model_ref(),
-    model_id    :: model_id(),
     content     :: term(),
     params      :: [model_param()],
     created     :: timestamp(),
-    created_by  :: string(),
-    order_index :: integer()        % For tracking chronological order.
+    created_by  :: string()
 }).
 
 
@@ -183,26 +182,26 @@ add_model(Model) ->
         representations = Representations
     } = Model,
     Activity = fun () ->
-        ModelId = case mnesia:read(ebi_store_model, OldModelId) of
-            [] -> new_id(model);
-            [_] -> OldModelId
+        ModelRef = ebi_model:get_ref(Model),
+        {ModelId, Definitions} = case mnesia:read(ebi_store_model, OldModelId) of
+            [] ->
+                {new_id(model), [ModelRef]};
+            [#ebi_store_model{definitions = OldDefinitions}] ->
+                {OldModelId, [ModelRef | OldDefinitions]}
         end,
         ok = mnesia:write(#ebi_store_model{
             id = ModelId,
             name = Name,
             description = Description,
-            status = Status
+            status = Status,
+            definitions = Definitions
         }),
-        ModelRef = ebi_model:get_ref(Model),
-        ModelDefOI = mnesia:dirty_update_counter(ebi_store_counter, model_def, 1),
         ok = mnesia:write(#ebi_store_model_def{
             ref = ModelRef,
-            model_id = ModelId,
             created = Changed,
             created_by = ChangedBy,
             content = ModelDef,
-            params = ModelParams,
-            order_index = ModelDefOI
+            params = ModelParams
         }),
         WriteRepFun = fun ({RT, RC}) ->
             ok = mnesia:write(#ebi_store_model_rep{
@@ -232,8 +231,12 @@ get_model(ModelId) ->
 -spec get_model(model_id(), model_ref()) -> {ok, #model{}}.
 get_model(ModelId, ModelRef) ->
     Activity = fun () ->
-        [Model] = mnesia:read(ebi_store_model, ModelId),
-        ModelDef = read_model_def(ModelId, ModelRef),
+        [Model = #ebi_store_model{definitions = Defs}] = mnesia:read(ebi_store_model, ModelId),
+        ModelDef = case {ModelRef, Defs} of
+            {latest, []}                 -> undefined;
+            {latest, [LastModelRef | _]} -> read_model_def(ModelId, LastModelRef);
+            _                            -> read_model_def(ModelId, ModelRef)
+        end,
         {ok, fill_model(Model, ModelDef)}
     end,
     mnesia:activity(transaction, Activity).
@@ -245,8 +248,11 @@ get_model(ModelId, ModelRef) ->
 -spec get_models(all) -> {ok, [#model{}]}.
 get_models(_Query = all) ->
     Activity = fun () ->
-        ModelFun = fun (Model = #ebi_store_model{id = ModelId}) ->
-            ModelDef = read_model_def(ModelId, latest),
+        ModelFun = fun (Model = #ebi_store_model{id = ModelId, definitions = ModelDefs}) ->
+            ModelDef = case ModelDefs of
+                []                   -> undefined;
+                [LatestModelRef | _] -> read_model_def(ModelId, LatestModelRef)
+            end,
             fill_model(Model, ModelDef)
         end,
         Models = mnesia:match_object(#ebi_store_model{_='_'}),
@@ -303,19 +309,12 @@ code_change(_OldVsn, State, _Extra) ->
 %%  Internal functions.
 %% =============================================================================
 
-read_model_def(ModelId, ModelRef) ->
-    ModelDefs = case ModelRef of
-        latest  -> mnesia:match_object(#ebi_store_model_def{model_id = ModelId, _ = '_'});
-        _       -> mnesia:read(ebi_store_model_def, ModelRef)
-    end,
-    ModelDef = case ModelDefs of
-        [] ->
-            undefined;
-        _ ->
-            {_, MD} = lists:max([ {OI, D} || D = #ebi_store_model_def{order_index = OI} <- ModelDefs]),
-            MD
-    end,
-    ModelDef.
+read_model_def(_ModelId, ModelRef) ->
+    ModelDefs =  mnesia:read(ebi_store_model_def, ModelRef),
+    case ModelDefs of
+        [] -> undefined;
+        [MD] -> MD
+    end.
 
 fill_model(Model, ModelDef) ->
     #ebi_store_model{
