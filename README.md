@@ -73,3 +73,19 @@ Design decisions
 
     A support for SBML and other widely used standards will be provided via import/export functionality.
 
+
+Developer notes
+===============
+
+To run the application interactively:
+
+    mkdir -p temp/data/mnesia
+    env ERL_LIBS=deps erl -pa ebin
+
+and then in the Erlang shell:
+
+    ebi_test_utils:configure("./temp").
+    ebi_test_utils:install_db().        % For the first startup only.
+    ebi_test_utils:start_core().
+    init:stop().
+
