@@ -31,7 +31,7 @@
 %%  Model types.
 %% =============================================================================
 
--type model_id() :: integer().      %% Identifies a model that can change over time.
+-type model_id() :: string().       %% Identifies a model that can change over time.
 -type model_ref() :: sha1sum().     %% Identified a particular model state.
 -type model_status() :: (valid | deleted | changed).
 -type model_version() :: v1.

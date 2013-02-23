@@ -184,7 +184,7 @@ add_model(Model) ->
     } = Model,
     Activity = fun () ->
         ModelId = case mnesia:read(ebi_store_model, OldModelId) of
-            []  -> mnesia:dirty_update_counter(ebi_store_counter, model, 1);
+            [] -> new_id(model);
             [_] -> OldModelId
         end,
         ok = mnesia:write(#ebi_store_model{
@@ -352,3 +352,10 @@ fill_model(Model, ModelDef) ->
         parameters = Parameters,
         representations = []
     }.
+
+
+new_id(model) ->
+    Counter = mnesia:dirty_update_counter(ebi_store_counter, model, 1),
+    [ $M, $- | integer_to_list(Counter)].
+
+
