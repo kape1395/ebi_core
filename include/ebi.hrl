@@ -22,8 +22,8 @@
 %%  Generic types.
 %% =============================================================================
 
--type sha1sum() :: list().
--type timestamp() :: calendar:timestamp().
+-type sha1sum() :: string().
+-type timestamp() :: erlang:timestamp().
 
 
 
