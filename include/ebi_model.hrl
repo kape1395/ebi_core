@@ -30,12 +30,18 @@
 
 -type parameter()       :: string().
 -type species()         :: string().
+-type reaction()        :: string().
+-type compartment()     :: string().
 
 -record(ebi_species, {
     name                :: species(),
     description         :: string()
 }).
 
+
+%%
+%%  Reaction definitions.
+%%
 -record(ebi_rdef_simple, {
     reagents = []       :: [{species(), number()}],
     products = []       :: [{species(), number()}],
@@ -47,15 +53,77 @@
     vmax                :: parameter(),
     km                  :: parameter()
 }).
+-type ebi_rdef() ::
+    #ebi_rdef_simple{} |
+    #ebi_rdef_mm{}.
 -record(ebi_reaction, {
-    name                :: string(),
-    definition          :: #ebi_rdef_simple{} | #ebi_rdef_mm{}
+    name                :: reaction(),
+    description         :: string(),
+    definition          :: ebi_rdef()
 }).
+
+
+%%
+%%  Medium definitions.
+%%
+-record(ebi_comp_species, {
+    species             :: species(),
+    concentration       :: parameter(),
+    diffusion           :: parameter()
+}).
+
+
+-record(ebi_mdef_cnt_electrode, {
+
+}).
+-record(ebi_mdef_selective, {
+
+}).
+-record(ebi_mdef_perforated, {
+
+}).
+-record(ebi_mdef_enzyme, {  %% TODO: Remove?
+
+}).
+-type ebi_mdef() ::
+    #ebi_mdef_cnt_electrode{} |
+    #ebi_mdef_selective{} |
+    #ebi_mdef_perforated{} |
+    #ebi_mdef_enzyme{}.
+
+
+%%
+%%  Compartment definition
+%%
+-record(ebi_cdef_solid_electrode, {
+    el_reaction         :: reaction()
+}).
+-record(ebi_cdef_solution, {
+    concentrations      :: [{species(), parameter()}],
+    nernst_thickness    :: parameter()
+}).
+-record(ebi_cdef_diffusive, {
+    reactions           :: [reaction()],
+    diffusion_coefs     :: parameter() | [{species(), parameter()}]
+}).
+-record(ebi_cdef_insulating, {
+}).
+-type ebi_cdef() ::
+    #ebi_cdef_solid_electrode{} |
+    #ebi_cdef_solution{} |
+    #ebi_cdef_diffusive{} |
+    #ebi_cdef_insulating{}.
+-record(ebi_compartment, {
+    name                :: compartment(),
+    description         :: string(),
+    definition          :: ebi_cdef()
+}).
+
 
 -record(ebi_model, {
     species = []        :: [#ebi_species{}],
     reactions = []      :: [#ebi_reaction{}],
-    compartments = []   :: []
+    compartments = []   :: [#ebi_compartment{}]
 }).
 
 

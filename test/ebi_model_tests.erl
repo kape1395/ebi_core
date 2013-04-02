@@ -69,25 +69,50 @@ test_read_model(_) ->
 test_1() ->
     #ebi_model{
         species = [
-            #ebi_species{name = "S", description = ""},
-            #ebi_species{name = "P", description = ""},
-            #ebi_species{name = "Eo", description = ""},
-            #ebi_species{name = "Er", description = ""}
+            #ebi_species{name = "S", description = "Substrate"},
+            #ebi_species{name = "P", description = "Product"},
+            #ebi_species{name = "Eo", description = "Enzyme in the oxidized form"},
+            #ebi_species{name = "Er", description = "Enzyme in the reduced form"}
         ],
         reactions = [
-            #ebi_reaction{name = "R1", definition = #ebi_rdef_mm{
+            #ebi_reaction{name = "R1", description = "First reaction", definition = #ebi_rdef_mm{
                 substrate = "S",
                 product = "P",
                 vmax = "Vmax",
                 km = "KM"
             }},
-            #ebi_reaction{name = "R2", definition = #ebi_rdef_simple{
+            #ebi_reaction{name = "R2", description = "Second reaction", definition = #ebi_rdef_simple{
                 reagents = [{"Er", 1}, {"S", 1}],
                 products = [{"Eo", 1}, {"P", 1}],
                 rateconst = "k1"
             }}
         ],
-        compartments = []
+        compartments = [
+            #ebi_compartment{
+                name = "\\Omega_1",
+                description = "Solid electrode",
+                definition = #ebi_cdef_solid_electrode{
+                    el_reaction = "R1"
+                }
+            },
+            #ebi_compartment{
+                name = "\\Omega_2",
+                description = "Enzyme",
+                definition = #ebi_cdef_diffusive{
+                    reactions = ["R2"],
+                    %diffusion_coef = "De",
+                    diffusion_coefs = []
+                }
+            },
+            #ebi_compartment{
+                name = "\\Omega_3",
+                description = "Solution",
+                definition = #ebi_cdef_solution{
+                    nernst_thickness = "d2",
+                    concentrations = [{"S", "S0"}]
+                }
+            }
+        ]
     }.
 
 
