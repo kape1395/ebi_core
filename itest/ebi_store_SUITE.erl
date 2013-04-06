@@ -83,7 +83,7 @@ test_add_model(_Config) ->
         definition = {sbml_model, some_content}
     },
     {ok, ModelId, ModelRef3} = ebi_store:add_model(Model03),
-    ModelRef /= ModelRef3,
+    ModelRef = ModelRef3,
 
     %% Check get latest model
     Model03GetLatest = Model03#model{ref = ModelRef3, representations = []},

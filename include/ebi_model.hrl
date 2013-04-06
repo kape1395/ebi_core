@@ -99,12 +99,15 @@
     el_reaction         :: reaction()
 }).
 -record(ebi_cdef_solution, {
-    concentrations      :: [{species(), parameter()}],
+    species             :: [#ebi_comp_species{}],
+    diffusion           :: parameter(),     %% Default diffusion, if not overriden by the species ref.
     nernst_thickness    :: parameter()
 }).
 -record(ebi_cdef_diffusive, {
+    species             :: [#ebi_comp_species{}],
+    diffusion           :: parameter(),
     reactions           :: [reaction()],
-    diffusion_coefs     :: parameter() | [{species(), parameter()}]
+    thickness           :: parameter()
 }).
 -record(ebi_cdef_insulating, {
 }).

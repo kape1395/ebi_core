@@ -26,8 +26,9 @@
 
 main_test_() ->
     [
-        ?setup(fun test_parsing_successful/1),
-        ?setup(fun test_read_model/1)
+        %?setup(fun test_parsing_successful/1),
+        %?setup(fun test_read_model/1),
+        ?setup(fun model_structure/1)
     ].
 
 
@@ -48,16 +49,16 @@ stop(_) ->
 %%  Actual tests
 %%
 
-test_parsing_successful(_) ->
-    {Status, _Model} = ebi_model:parse_file("../test/ebi_model_tests-CNT-2D.xml"),
-    [?_assertEqual(ok, Status)].
-
-
-test_read_model(_) ->
-    #model{representations = [Type, _Content]} = ebi_model:read_model(
-        "../test/ebi_model_tests-CNT-2D.xml",
-        undefined),
-    [?_assertEqual(kp1_xml, Type)].
+%% test_parsing_successful(_) ->
+%%     {Status, _Model} = ebi_model:parse_file("../test/ebi_model_tests-CNT-2D.xml"),
+%%     [?_assertEqual(ok, Status)].
+%% 
+%% 
+%% test_read_model(_) ->
+%%     #model{representations = [Type, _Content]} = ebi_model:read_model(
+%%         "../test/ebi_model_tests-CNT-2D.xml",
+%%         undefined),
+%%     [?_assertEqual(kp1_xml, Type)].
 
 
 
@@ -66,7 +67,7 @@ test_read_model(_) ->
 %%
 
 
-test_1() ->
+model_structure(_) ->
     #ebi_model{
         species = [
             #ebi_species{name = "S", description = "Substrate"},
@@ -90,26 +91,28 @@ test_1() ->
         compartments = [
             #ebi_compartment{
                 name = "\\Omega_1",
-                description = "Solid electrode",
-                definition = #ebi_cdef_solid_electrode{
-                    el_reaction = "R1"
+                description = "Solution",
+                definition = #ebi_cdef_solution{
+                    species = [#ebi_comp_species{species = "S", concentration = "S0"}],
+                    diffusion = "0",
+                    nernst_thickness = "d1"
                 }
             },
             #ebi_compartment{
                 name = "\\Omega_2",
                 description = "Enzyme",
                 definition = #ebi_cdef_diffusive{
+                    species = [#ebi_comp_species{species = "E", diffusion = "0", concentration = "E0"}],
+                    diffusion = "De",
                     reactions = ["R2"],
-                    %diffusion_coef = "De",
-                    diffusion_coefs = []
+                    thickness = "d2"
                 }
             },
             #ebi_compartment{
                 name = "\\Omega_3",
-                description = "Solution",
-                definition = #ebi_cdef_solution{
-                    nernst_thickness = "d2",
-                    concentrations = [{"S", "S0"}]
+                description = "Solid electrode",
+                definition = #ebi_cdef_solid_electrode{
+                    el_reaction = "R1"
                 }
             }
         ]
