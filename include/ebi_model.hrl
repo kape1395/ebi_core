@@ -47,6 +47,10 @@
     products = []       :: [{species(), number()}],
     rateconst           :: parameter()
 }).
+-record(ebi_rdef_fast, {
+    reagents = []       :: [{species(), number()}],
+    products = []       :: [{species(), number()}]
+}).
 -record(ebi_rdef_mm, {
     substrate           :: species(),
     product             :: species(),
@@ -55,6 +59,7 @@
 }).
 -type ebi_rdef() ::
     #ebi_rdef_simple{} |
+    #ebi_rdef_fast{} |
     #ebi_rdef_mm{}.
 -record(ebi_reaction, {
     name                :: reaction(),
@@ -76,20 +81,12 @@
 -record(ebi_mdef_cnt_electrode, {
 
 }).
--record(ebi_mdef_selective, {
-
-}).
 -record(ebi_mdef_perforated, {
-
-}).
--record(ebi_mdef_enzyme, {  %% TODO: Remove?
 
 }).
 -type ebi_mdef() ::
     #ebi_mdef_cnt_electrode{} |
-    #ebi_mdef_selective{} |
-    #ebi_mdef_perforated{} |
-    #ebi_mdef_enzyme{}.
+    #ebi_mdef_perforated{}.
 
 
 %%
@@ -100,12 +97,10 @@
 }).
 -record(ebi_cdef_solution, {
     species             :: [#ebi_comp_species{}],
-    diffusion           :: parameter(),     %% Default diffusion, if not overriden by the species ref.
     nernst_thickness    :: parameter()
 }).
 -record(ebi_cdef_diffusive, {
     species             :: [#ebi_comp_species{}],
-    diffusion           :: parameter(),
     reactions           :: [reaction()],
     thickness           :: parameter()
 }).
