@@ -89,7 +89,7 @@
     #ebi_mdef_perforated{}.
 
 -record(ebi_mdef_nernst, {
-	% TODO: Model nernst layer as a feature of the well mixed solution.
+    % TODO: Model nernst layer as a feature of the well mixed solution.
 }).
 
 
@@ -100,7 +100,7 @@
     el_reaction         :: reaction()
 }).
 -record(ebi_cdef_clark_electrode, {
-    species         	:: species()
+    el_species          :: species()
 }).
 -record(ebi_cdef_solution, {
     species             :: [species()]
