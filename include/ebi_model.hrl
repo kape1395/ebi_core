@@ -124,10 +124,18 @@
 }).
 
 
+-record(ebi_rule, {
+    type                :: (const | initial),
+    species             :: species(),
+    compartment         :: compartment(),
+    concentration       :: parameter()
+}).
+
 -record(ebi_model, {
     species = []        :: [#ebi_species{}],
     reactions = []      :: [#ebi_reaction{}],
-    compartments = []   :: [#ebi_compartment{}]
+    compartments = []   :: [#ebi_compartment{}],
+    rules = []          :: [#ebi_rule{}]
 }).
 
 
