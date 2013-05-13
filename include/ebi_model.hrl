@@ -88,6 +88,10 @@
     #ebi_mdef_cnt_electrode{} |
     #ebi_mdef_perforated{}.
 
+-record(ebi_mdef_nernst, {
+	% TODO: Model nernst layer as a feature of the well mixed solution.
+}).
+
 
 %%
 %%  Compartment definition
@@ -95,9 +99,11 @@
 -record(ebi_cdef_solid_electrode, {
     el_reaction         :: reaction()
 }).
+-record(ebi_cdef_clark_electrode, {
+    species         	:: species()
+}).
 -record(ebi_cdef_solution, {
-    species             :: [#ebi_comp_species{}],
-    nernst_thickness    :: parameter()
+    species             :: [species()]
 }).
 -record(ebi_cdef_diffusive, {
     species             :: [#ebi_comp_species{}],
