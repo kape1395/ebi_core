@@ -18,7 +18,7 @@
 #define LOG(message) if (log) (*log) << "ErlangMsgCodec_conf: " << message << std::endl
 
 
-std::string ErlangMsgCodec_conf::SUPPORTED_MODEL_TYPE("kp1_xml");
+std::string ErlangMsgCodec_conf::SUPPORTED_MODEL_TYPE("bio_solver_xml_v1");
 
 
 /* ************************************************************************** */

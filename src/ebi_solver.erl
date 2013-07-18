@@ -35,6 +35,14 @@
 -define(RC_SIMULATION_STOPPED, 12).
 -define(RC_SIMULATION_FAILED,  13).
 
+
+%%
+%%  Invoked by a queue, when new simulation is available.
+%%
+-callback solve(pid(), #model{})
+        -> ok | {error, Reason :: term()}.
+
+
 %%
 %%
 %%
@@ -317,7 +325,7 @@ start_solver_port(Simulation, PortProgram) when is_record(Simulation, simulation
     Port.
 
 %%
-%%  @doc Sents stop command to the solver. The solver should terminate gracefully 
+%%  @doc Sents stop command to the solver. The solver should terminate gracefully
 %%  and send corresponding messages to this process. Those messages should be
 %%  handled by handle_info/3.
 %%

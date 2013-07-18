@@ -44,7 +44,7 @@ parse_file(FileName) ->
 %%
 read_model(FileName, _Type) ->
     {ok, _Model} = file:read_file(FileName),
-    ok. % TODO: #model{type = kp1_xml, definition = Model}.
+    ok. % TODO: #model{type = bio_solver_xml_v1, definition = Model}.
 
 
 

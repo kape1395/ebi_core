@@ -35,8 +35,9 @@
 -type model_ref() :: sha1sum().     %% Identified a particular model state.
 -type model_status() :: (valid | deleted | changed).
 -type model_version() :: v1.
--type model_type() :: (kp1_xml | kp1_parsed | reference | ebi_sbml_v1).
+-type model_type() :: (bio_solver_xml_v1 | bio_solver_parsed_v1 | reference | ebi_sbml_v1).
 -type model_param() :: string().
+
 
 %%
 %%  Model, as it is visible to a user. The model is identified via its ID.
@@ -52,7 +53,7 @@
     changed_by  :: string(),
     definition  :: #ebi_model{},
     parameters = []         :: [model_param()],
-    representations = []    :: [{model_type(), Representation :: term()}]
+    representations = []    :: [{model_type(), Representation :: term()}]   % Remove
 }).
 
 

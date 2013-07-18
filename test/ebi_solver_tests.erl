@@ -50,7 +50,7 @@ suspend_test_() ->
 start() ->
     Model = ebi_model:read_model(
         "../test/ebi_model_tests-CNT-2D.xml",
-        kp1_xml
+        bio_solver_xml_v1
     ),
     Simulation = #simulation{
         id = "0000000000000000000000000000000000000000",

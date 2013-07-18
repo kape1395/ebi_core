@@ -52,13 +52,13 @@ stop(_) ->
 %% test_parsing_successful(_) ->
 %%     {Status, _Model} = ebi_model:parse_file("../test/ebi_model_tests-CNT-2D.xml"),
 %%     [?_assertEqual(ok, Status)].
-%% 
-%% 
+%%
+%%
 %% test_read_model(_) ->
 %%     #model{representations = [Type, _Content]} = ebi_model:read_model(
 %%         "../test/ebi_model_tests-CNT-2D.xml",
 %%         undefined),
-%%     [?_assertEqual(kp1_xml, Type)].
+%%     [?_assertEqual(bio_solver_xml_v1, Type)].
 
 
 
