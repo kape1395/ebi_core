@@ -30,7 +30,7 @@
 
 -spec sha1sum(binary()) -> string().
 sha1sum(Binary) when is_binary(Binary) ->
-    SHA = crypto:sha(Binary),
+    SHA = crypto:hash(sha, Binary),
     lists:flatten([io_lib:format("~2.16.0B", [X]) || X <- binary_to_list(SHA)]).
 
 

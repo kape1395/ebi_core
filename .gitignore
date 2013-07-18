@@ -1,11 +1,13 @@
 *.beam
 *.bak
-ebin/
 .eunit/
 .project
 .settings/
 .ditz-config
+.kateproject.d/
 log/
+ebin/
+ebin-erlide/
 logs/
 deps/
 temp/
