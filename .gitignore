@@ -1,5 +1,6 @@
 *.beam
 *.bak
+*.kate-swp
 .eunit/
 .project
 .settings/

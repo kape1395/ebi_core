@@ -1,5 +1,5 @@
 %
-% Copyright 2012 Karolis Petrauskas
+% Copyright 2012-2013 Karolis Petrauskas
 %
 % Licensed under the Apache License, Version 2.0 (the "License");
 % you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ start(normal, _Args) ->
     %    {queue, MifCl2Name, {ebi_queue_mifcl2_sup, start_link, [MifCl2Cfg]}}
     ]},
     ebi_sup:start_link(Config).
- 
+
 stop(_State) ->
     ok.
 

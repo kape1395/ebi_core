@@ -1,5 +1,5 @@
 %
-% Copyright 2012 Karolis Petrauskas
+% Copyright 2012-2013 Karolis Petrauskas
 %
 % Licensed under the Apache License, Version 2.0 (the "License");
 % you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@
 -export([start_link/0]).
 -export([install/1, wait_for_tables/1]).
 -export([
-    add_model/1, get_model/1, get_model/2, get_models/1%,
-    %add_simulation/1, set_simulation_status/2, set_simulation_target/2, get_simulation/1, get_simulations/1
+    add_model/1, get_model/1, get_model/2, get_models/1,
+    add_simulation/1 %, set_simulation_status/2, set_simulation_target/2, get_simulation/1, get_simulations/1
 ]).
 -export([init/1, terminate/2, handle_call/3, handle_cast/2, handle_info/2, code_change/3]).
 -include("ebi.hrl").
@@ -262,9 +262,13 @@ get_models(_Query = all) ->
     {ok, Result}.
 
 
-%% add_simulation(_Simulation) ->
-%%     ok.
 %%
+%%  TODO.
+%%
+add_simulation(_Simulation) ->
+     ok.
+
+
 %% set_simulation_status(_Simulation, _Status) ->
 %%     ok.
 %%

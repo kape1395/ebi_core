@@ -1,5 +1,5 @@
 %
-% Copyright 2012 Karolis Petrauskas
+% Copyright 2012-2013 Karolis Petrauskas
 %
 % Licensed under the Apache License, Version 2.0 (the "License");
 % you may not use this file except in compliance with the License.
@@ -21,29 +21,21 @@
 %%
 -module(ebi).
 -behaviour(gen_server).
--export([start_link/0, stop/0, get_id/1]).
--export([test/0]).
+-compile([{parse_transform, lager_transform}]).
+-export([start_link/0, get_id/1, submit/1, cancel/1, delete/1, result/1, status/1]).
 -export([init/1, terminate/2, handle_call/3, handle_cast/2, handle_info/2, code_change/3]).
 -include("ebi.hrl").
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%  Initialization.
-%%
-
-start_link() ->
-    gen_server:start_link({local, ebi}, ebi, [], []).
-
-stop() ->
-    gen_server:cast(ebi, stop).
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% =============================================================================
 %%  Public interface.
-%%
+%% =============================================================================
 
-test() ->
-    gen_server:call(ebi, test).
+%%
+%%  Start the server.
+%%
+start_link() ->
+    gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 
 %%
@@ -65,34 +57,103 @@ get_id(Binary) when is_binary(Binary) ->
     ebi_utils:sha1sum(Binary).
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%  Callbacks.
 %%
+%%  Starts new simulation.
+%%
+-spec submit(#simulation{})
+        -> ok.
 
-init(_Args) ->
-    {ok, []}.
+submit(Simulation) ->
+    SimulationWithId = Simulation#simulation{id = get_id(Simulation)},
+    ok = ebi_store:add_simulation(SimulationWithId),
+    ok = ebi_queue:submit(SimulationWithId).
 
-terminate(_Reason, _State) ->
+
+%%
+%%  TODO: Cancels the simulation.
+%%
+cancel(#simulation{}) ->
     ok.
+
+
+%%
+%%  TODO: Delete simulation and its results.
+%%
+delete(#simulation{}) ->
+    ok.
+
+
+%%
+%%  TODO: Get simulation results.
+%%
+result(#simulation{}) ->
+    ok.
+
+
+%%
+%%  TODO: Get simulation status.
+%%
+status(#simulation{}) ->
+    ok.
+
+
+
+%% =============================================================================
+%%  Internal state.
+%% =============================================================================
+
+-record(state, {
+}).
+
+
+
+%% =============================================================================
+%%  Callbacks for gen_server
+%% =============================================================================
+
+%%
+%%  Initialization.
+%%
+init(_Args) ->
+    {ok, #state{}}.
+
 
 %%
 %%  Sync calls.
 %%
-handle_call(test, _From, State) ->
-    {reply, "This is a test", State}.
+handle_call(_Message, _From, State) ->
+    {reply, undefined, State}.
+
 
 %%
 %%  Async calls.
 %%
-handle_cast(stop, State) ->
-    {stop, normal, State};
 handle_cast(_, State) ->
     {noreply, State}.
 
+
+%%
+%%  Other messages.
+%%
 handle_info(_, State) ->
     {noreply, State}.
 
+
+%%
+%%  Code upgrade.
+%%
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
+
+%%
+%%  Cleanup.
+%%
+terminate(_Reason, _State) ->
+    ok.
+
+
+
+%% =============================================================================
+%%  Internal functions.
+%% =============================================================================
