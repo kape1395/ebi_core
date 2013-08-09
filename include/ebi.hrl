@@ -73,7 +73,7 @@
 -record(param, {
     name,    % Parameter name.
     value    % Parameter value.
-    }).
+}).
 
 
 %%
@@ -95,7 +95,7 @@
     default,
     vectors,
     labels
-    }).
+}).
 
 
 %%
@@ -124,7 +124,7 @@
     concentrations,
     outputs = [],
     listeners = []
-    }).
+}).
 
 
 %%
@@ -139,7 +139,7 @@
     type,
     name,
     data
-    }).
+}).
 
 
 %%
@@ -162,7 +162,7 @@
     state = undefined :: (undefined | pending | running | completed | failed | canceled),
     checkpoints = [],
     outputs = []
-    }).
+}).
 
 
 -endif.

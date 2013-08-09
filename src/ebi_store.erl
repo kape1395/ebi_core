@@ -25,7 +25,8 @@
 -export([install/1, wait_for_tables/1]).
 -export([
     add_model/1, get_model/1, get_model/2, get_models/1,
-    add_simulation/1 %, set_simulation_status/2, set_simulation_target/2, get_simulation/1, get_simulations/1
+    add_simulation/1, get_model_representation/3
+    %, set_simulation_status/2, set_simulation_target/2, get_simulation/1, get_simulations/1
 ]).
 -export([init/1, terminate/2, handle_call/3, handle_cast/2, handle_info/2, code_change/3]).
 -include("ebi.hrl").
@@ -65,7 +66,7 @@
 %%
 -record(ebi_store_model_def, {
     ref         :: model_ref(),
-    content     :: term(),
+    content     :: term(),              % TODO: WTF
     params      :: [model_param()],
     created     :: timestamp(),
     created_by  :: string()
@@ -80,7 +81,7 @@
     model_ref   :: model_ref(),
     model_id    :: model_id(),
     model_type  :: model_type(),
-    content     :: term()
+    content     :: term()               % TODO: WTF
 }).
 
 
@@ -148,7 +149,7 @@ create_tables(Nodes) ->
     OK = mnesia:create_table(ebi_store_biosensor,   [{type, set},  ?ATTRS(ebi_store_biosensor), DefOptDC]),
     OK = mnesia:create_table(ebi_store_model,       [{type, set},  ?ATTRS(ebi_store_model),     DefOptDC]),
     OK = mnesia:create_table(ebi_store_model_def,   [{type, set},  ?ATTRS(ebi_store_model_def), DefOptDC]),
-    OK = mnesia:create_table(ebi_store_model_rep,   [{type, set},  ?ATTRS(ebi_store_model_rep), DefOptDC]),
+    OK = mnesia:create_table(ebi_store_model_rep,   [{type, bag},  ?ATTRS(ebi_store_model_rep), DefOptDC]),
     OK = mnesia:create_table(ebi_store_tag,         [{type, set},  ?ATTRS(ebi_store_tag),       DefOptDC]),
     OK = mnesia:create_table(ebi_store_counter,     [{type, set},  ?ATTRS(ebi_store_counter),   DefOptDC]),
     ok.
@@ -263,6 +264,28 @@ get_models(_Query = all) ->
 
 
 %%
+%%
+%%
+-spec get_model_representation(model_id(), model_ref(), [model_type()])
+    -> undefined | term().
+
+get_model_representation(_ModelId, ModelRef, ModelRepTypes) ->
+    Reps = mnesia:dirty_read(ebi_store_model_rep, ModelRef),
+    SearchFun = fun (MRT, Found) ->
+        RepOfType = [ RepContent
+            || #ebi_store_model_rep{model_type = RepType, content = RepContent} <- Reps,
+            RepType =:= MRT
+        ],
+        case {RepOfType, Found} of
+            {_, F} when F =/= undefined -> F;
+            {[], undefined} -> undefined;
+            {[R], undefined} -> R
+        end
+    end,
+    lists:foldl(SearchFun, undefined, ModelRepTypes).
+
+
+%%
 %%  TODO.
 %%
 add_simulation(_Simulation) ->
@@ -314,7 +337,7 @@ code_change(_OldVsn, State, _Extra) ->
 %% =============================================================================
 
 read_model_def(_ModelId, ModelRef) ->
-    ModelDefs =  mnesia:read(ebi_store_model_def, ModelRef),
+    ModelDefs = mnesia:read(ebi_store_model_def, ModelRef),
     case ModelDefs of
         [] -> undefined;
         [MD] -> MD
