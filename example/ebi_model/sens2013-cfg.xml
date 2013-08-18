@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model
+    xmlns  ="http://karolis.5grupe.lt/biosensor/model"
+    xmlns:b="http://karolis.5grupe.lt/biosensor/model/bound"
+    xmlns:r="http://karolis.5grupe.lt/biosensor/model/reaction"
+    xmlns:s="http://karolis.5grupe.lt/biosensor/model/solver"
+    xmlns:t="http://karolis.5grupe.lt/biosensor/model/transducer"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://karolis.5grupe.lt/biosensor/model            /usr/share/biosensor/Model.xsd
+        http://karolis.5grupe.lt/biosensor/model/bound      /usr/share/biosensor/ModelBound.xsd
+        http://karolis.5grupe.lt/biosensor/model/reaction   /usr/share/biosensor/ModelReaction.xsd
+        http://karolis.5grupe.lt/biosensor/model/solver     /usr/share/biosensor/ModelSolver.xsd
+        http://karolis.5grupe.lt/biosensor/model/transducer /usr/share/biosensor/ModelTransducer.xsd
+        "
+    coordinateSystem="Cartesian">
+
+
+    <axis name="x">
+        <point position="x_0"/>
+        <point position="x_1"/>
+    </axis>
+    <axis name="y">
+        <point position="a_0"/>
+        <point position="a_1"/>
+        <point position="a_2"/>
+        <point position="a_3"/>
+        <point position="a_4"/>
+    </axis>
+
+
+    <substance name="S"/>
+    <substance name="E_o"/>
+    <substance name="E_r"/>
+    <substance name="M_o"/>
+    <substance name="M_r"/>
+
+
+    <reaction name="R_1" xsi:type="r:ReductionOxidation" rate="k_1">
+        <r:substrate name="E_o"/>
+        <r:substrate name="S"/>
+        <r:product   name="E_r"/>
+    </reaction>
+    <reaction name="R_2" xsi:type="r:ReductionOxidation" rate="k_2">
+        <r:substrate name="E_r"/>
+        <r:substrate name="M_o"/>
+        <r:product   name="E_o"/>
+        <r:product   name="M_r"/>
+    </reaction>
+    <reaction name="R_3" xsi:type="r:ReductionOxidation" rate="k_3">
+        <r:substrate name="M_r"/>
+        <r:product   name="M_o"/>
+    </reaction>
+
+
+    <medium name="L_4">
+        <substance name="S"   diffusion="D_4" initial="0"/>
+        <substance name="M_o" diffusion="D_4" initial="0"/>
+        <substance name="M_r" diffusion="D_4" initial="0"/>
+        <area bottom="a_3" top="a_4" left="x_0" right="x_1"/>
+    </medium>
+    <medium name="L_3">
+        <substance name="S"   diffusion="D_3" initial="0"/>
+        <substance name="M_o" diffusion="D_3" initial="0"/>
+        <substance name="M_r" diffusion="D_3" initial="0"/>
+        <area bottom="a_2" top="a_3" left="x_0" right="x_1"/>
+    </medium>
+    <medium name="L_2">
+        <substance name="S"   diffusion="D_2" initial="0"/>
+        <substance name="M_o" diffusion="D_2" initial="0"/>
+        <substance name="M_r" diffusion="D_2" initial="0"/>
+        <area bottom="a_1" top="a_2" left="x_0" right="x_1"/>
+    </medium>
+    <medium name="L_1">
+        <substance name="S"   diffusion="D_1" initial="0"/>
+        <substance name="E_o"                 initial="E_0"/>
+        <substance name="E_r"                 initial="0"/>
+        <substance name="M_o" diffusion="D_1" initial="0"/>
+        <substance name="M_r" diffusion="D_1" initial="0"/>
+        <reaction name="R_1"/>
+        <reaction name="R_2"/>
+        <area bottom="a_0" top="a_1" left="x_0" right="x_1"/>
+    </medium>
+
+
+    <bound from="x_0" to="x_1" at="a_4" name="ExternalBound">
+        <substance name="S"   xsi:type="b:Constant" concentration="S_0"/>
+        <substance name="M_o" xsi:type="b:Constant" concentration="M_0"/>
+    </bound>
+    <bound from="x_0" to="x_1" at="a_0" name="ElectrodeSurface">
+        <substance name="M_r" xsi:type="b:Constant" concentration="0"/>
+        <reaction name="R_3"/>
+    </bound>
+
+
+    <transducer name="electrode" xsi:type="t:AmperometricElectrode"
+        bound="ElectrodeSurface"
+        substance="M_r"
+    />
+
+
+    <!-- Geometry -->
+    <symbol name="x_0" value="0.0"      dimension="m"/>
+    <symbol name="x_1" value="1.0"      dimension="m"/>
+
+    <symbol name="a_0" value="0.0"      dimension="m"/>
+    <symbol name="a_1" value="0.002E-3" dimension="m"/>
+    <symbol name="a_2" value="0.004E-3" dimension="m"/>
+    <symbol name="a_3" value="0.014E-3" dimension="m"/>
+    <symbol name="a_4" value="0.164E-3" dimension="m"/>
+
+    <!-- Diffusion coefficients -->
+    <symbol name="D_1" value="3.00E-10"  dimension="m^2/s"/>
+    <symbol name="D_2" value="4.20E-10"  dimension="m^2/s"/>
+    <symbol name="D_3" value="3.75E-10"  dimension="m^2/s"/>
+    <symbol name="D_4" value="6.00E-10"  dimension="m^2/s"/>
+
+    <!-- Concentrations -->
+    <symbol name="E_0" value="0.012E+0" dimension="mol/m^3"/>
+    <symbol name="M_0" value="0.050E+0" dimension="mol/m^3"/>
+    <symbol name="S_0" value="4.980E+0" dimension="mol/m^3"/>
+    <symbol name="0"   value="0.0"      dimension="mol/m^3"/>
+
+    <!-- Reaction rates -->
+    <symbol name="k_1" value="6.9E2" dimension="m^3/mol*s"/>
+    <symbol name="k_2" value="4.0E4" dimension="m^3/mol*s"/>
+    <symbol name="k_3" value="INF"   dimension="m^3/mol*s"/>
+
+
+    <solver xsi:type="s:Implicit1D" timeStep="1E-4">
+        <output name="response" xsi:type="s:Kinetic" stepCount="10000">
+            <s:output name="currentDensity"     xsi:type="s:CurrentDensity"/>
+        </output>
+        <!--
+        <output name="substanceConcentrations" xsi:type="s:Kinetic" stepCount="10000">
+            <s:output name="concentrations"     xsi:type="s:ConcentrationProfile" precision="12"/>
+            <s:output name="avgConcentrations"  xsi:type="s:AveragedConcentration"/>
+            <s:output name="avgConcInOmega_1"   xsi:type="s:AveragedConcentration" medium="\Omega_1"/>
+            <s:output name="avgConcInOmega_2"   xsi:type="s:AveragedConcentration" medium="\Omega_2"/>
+            <s:output name="avgConcInOmega_3"   xsi:type="s:AveragedConcentration" medium="\Omega_3"/>
+            <s:output name="avgConcInOmega_4"   xsi:type="s:AveragedConcentration" medium="\Omega_4"/>
+        </output>
+        -->
+        <s:axis from="x_0" to="x_1" xsi:type="s:ConstantAxisPart" stepCount="2"/>
+        <s:axis from="a_0" to="a_1" xsi:type="s:ConstantAxisPart" stepCount="50"/>
+        <s:axis from="a_1" to="a_2" xsi:type="s:ConstantAxisPart" stepCount="50"/>
+        <s:axis from="a_2" to="a_3" xsi:type="s:ConstantAxisPart" stepCount="50"/>
+        <s:axis from="a_3" to="a_4" xsi:type="s:ConstantAxisPart" stepCount="50"/>
+        <s:stopCondition
+            xsi:type="s:StopConditionValidAfter"
+            stepCount="100000">
+            <s:stopCondition
+                xsi:type="s:CurrentDensityGradient"
+                lessThan="0.01"
+                normalized="true"
+            />
+        </s:stopCondition>
+        <s:stopCondition xsi:type="s:FailIfAbove" stepCount="500000000"/>
+        <s:stopCondition xsi:type="s:FailIfInvalidConcentrations"/>
+        <s:stopCondition
+            xsi:type="s:FailISumOfConcentrationsNonConst"
+            medium="L_1" sum="E_0" error="1E-6">
+            <s:substance>E_o</s:substance>
+            <s:substance>E_r</s:substance>
+        </s:stopCondition>
+    </solver>
+
+</model>

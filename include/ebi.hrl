@@ -38,6 +38,8 @@
 -type model_type() :: (bio_solver_xml_v1 | bio_solver_parsed_v1 | reference | ebi_sbml_v1).
 -type model_param() :: string().
 
+-type store_ref() :: {Mod :: module(), Args :: term()}.
+
 
 %%
 %%  Model, as it is visible to a user. The model is identified via its ID.

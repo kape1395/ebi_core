@@ -23,6 +23,7 @@
 -behaviour(gen_server).
 -compile([{parse_transform, lager_transform}]).
 -export([start_link/0, get_id/1, submit/1, cancel/1, delete/1, result/1, status/1]).
+-export([experiment_result/3]).
 -export([init/1, terminate/2, handle_call/3, handle_cast/2, handle_info/2, code_change/3]).
 -include("ebi.hrl").
 
@@ -58,16 +59,26 @@ get_id(Binary) when is_binary(Binary) ->
 
 
 %%
-%%  Starts new simulation.
+%%  Starts single simulation.
 %%
 -spec submit(#simulation{})
         -> ok.
 
-submit(Simulation) ->
+submit(Simulation) when is_record(Simulation, simulation) ->
     SimulationWithId = Simulation#simulation{id = get_id(Simulation)},
     ok = ebi_store:add_simulation(SimulationWithId),
     ok = ebi_queue:submit(SimulationWithId).
 
+submit(ModelCB, ExpParams) ->
+    {ok, StoreRef} = ebi_model:store_ref(ModelCB),
+    SimParams = ebi_model:exp_to_sim(ModelCB, ExpParams),
+    Simulation = #simulation{
+        model = Model,
+        params = SimParams
+    },
+
+    ebi_queue:enqueue_if_missing(ModelCB),
+    ok. % TODO
 
 %%
 %%  TODO: Cancels the simulation.
@@ -95,6 +106,22 @@ result(#simulation{}) ->
 %%
 status(#simulation{}) ->
     ok.
+
+
+perform(Model, SeriesSpec) ->
+    ok.
+
+
+%%
+%%
+%%
+experiment_result({ModelCBMod, ModelCBArgs}, ExpSymbols, ResultSpec) ->
+    case ebi_queue:enqueue() of
+        {done, Ref} ->
+            ok;
+        {wait, Ref} ->
+            ok
+    end.
 
 
 
