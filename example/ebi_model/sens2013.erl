@@ -20,7 +20,7 @@ store_ref(a = _Args) ->
 
 
 model_ref(a = _Args) ->
-    {ok, {ebi_model_bsxml1, {file, bio_solver_xml_v1, "../sens2013-cfg.bsxml1.xml"}}}.
+    {ok, {ebi_model_bsxml1, {file, bio_solver_xml_v1, "sens2013-cfg.bsxml1.xml"}}}.
 
 
 exp_to_sim({exp, S}, a = _Args) ->
